@@ -4,13 +4,13 @@ Brave Focus Toggle
 Blocks distracting sites in Brave using browser policies.
 Run it, type the option number, done.
 
-1 = Focus ON    (block the sites in your list)
-2 = Focus OFF   (remove the block - your list is kept)
+1 = Block sites
+2 = Unblock sites
 3 = Show status and list
 4 = Add a site to the list
 5 = Remove a site from the list
-6 = Debloat Brave (one-way: turns off Rewards, Wallet, VPN,
-    News, Talk, Leo AI and the telemetry pings - no undo here)
+6 = Debloat Brave (turns off Rewards, Wallet, VPN,
+    News, Talk, Leo AI and the telemetry pings)
 0 = Exit
 
 Your site list lives in "focus_sites.txt" next to this script
@@ -132,7 +132,7 @@ def remove_block():
         pass
 
 
-# ---------- debloat (option 6, one-way) ----------
+# ---------- debloat (option 6) ----------
 
 # *Disabled policies take 1 (= disabled), *Enabled policies take 0 (= off).
 DEBLOAT_POLICIES = {
@@ -149,7 +149,7 @@ DEBLOAT_POLICIES = {
 
 
 def debloat_brave():
-    print("\nThis turns OFF, with no undo in this tool:")
+    print("\nThis turns OFF:")
     print("  Rewards, Wallet, VPN, News, Talk, Leo AI,")
     print("  stats ping, P3A metrics, Web Discovery.")
     confirm = input("Type y and press Enter to continue: ").strip().lower()
@@ -272,12 +272,12 @@ def print_menu(sites):
     print(c("========================================", CYAN))
     print(f"  Focus: {state}   |   Sites in list: {len(sites)}")
     print()
-    print("  1. Focus ON      (block sites)")
-    print("  2. Focus OFF     (remove block)")
+    print("  1. Block sites")
+    print("  2. Unblock sites")
     print("  3. Show status and list")
     print("  4. Add a site")
     print("  5. Remove a site")
-    print("  6. Debloat Brave (one-way, no undo)")
+    print("  6. Debloat Brave")
     print("  0. Exit")
 
 

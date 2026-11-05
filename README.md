@@ -26,12 +26,12 @@ policies live in a protected part of the registry.
 ## Menu
 
 ```
-1. Focus ON   (block sites)
-2. Focus OFF  (remove block)
+1. Block sites
+2. Unblock sites
 3. Show status and list
 4. Add a site
 5. Remove a site
-6. Debloat Brave (one-way, no undo)
+6. Debloat Brave
 0. Exit
 ```
 
@@ -48,8 +48,7 @@ file by hand (one site per line).
 
 - Running any option repeatedly is safe: registry values are overwritten,
   never duplicated, and the blocklist is rebuilt cleanly each time.
-- Focus ON/OFF touches only the `URLBlocklist` policy. Debloat writes its
-  own separate policies and has no undo in this tool (to reverse it
-  manually, delete the values under
-  `HKLM\SOFTWARE\Policies\BraveSoftware\Brave` in the registry).
+- Block/Unblock touches only the `URLBlocklist` policy. Debloat writes
+  its own separate policies under
+  `HKLM\SOFTWARE\Policies\BraveSoftware\Brave` in the registry.
 - Verify everything any time at `brave://policy`.
