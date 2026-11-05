@@ -258,15 +258,20 @@ RELOAD_HINT = (
 )
 
 
-def print_menu():
-    print("=== Brave Focus Toggle ===")
-    print("1. Focus ON   (block sites)")
-    print("2. Focus OFF  (remove block)")
-    print("3. Show status and list")
-    print("4. Add a site")
-    print("5. Remove a site")
-    print("6. Debloat Brave (one-way, no undo)")
-    print("0. Exit")
+def print_menu(sites):
+    state = c("ON", GREEN + BOLD) if block_is_on() else c("OFF", YELLOW)
+    print(c("========================================", CYAN))
+    print(c("          BRAVE FOCUS TOGGLE", BOLD + CYAN))
+    print(c("========================================", CYAN))
+    print(f"  Focus: {state}   |   Sites in list: {len(sites)}")
+    print()
+    print("  1. Focus ON      (block sites)")
+    print("  2. Focus OFF     (remove block)")
+    print("  3. Show status and list")
+    print("  4. Add a site")
+    print("  5. Remove a site")
+    print("  6. Debloat Brave (one-way, no undo)")
+    print("  0. Exit")
 
 
 def main():
@@ -278,7 +283,7 @@ def main():
 
     while True:
         sites = load_sites()
-        print_menu()
+        print_menu(sites)
         choice = input("\nEnter option number: ").strip()
 
         if choice == "1":
