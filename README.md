@@ -27,13 +27,13 @@ policies live in a protected part of the registry.
 
 ```
 1. Block sites
-2. Unblock sites
-3. Show status and list
-4. Add a site
-5. Remove a site
-6. Debloat Brave
+2. Debloat Brave
 0. Exit
 ```
+
+**Block sites** opens its own screen with a live status header
+(`SITE BLOCKING: ON/OFF`, `SITES IN LIST: n`) and its own options:
+Turn ON/OFF, Add site, Remove site, Show list, Back.
 
 After any change, restart Brave fully - or open `brave://policy` and click
 **Reload policies** - to make Brave notice.
@@ -41,8 +41,8 @@ After any change, restart Brave fully - or open `brave://policy` and click
 ## Your site list
 
 Blocked sites are stored in `focus_sites.txt`, created next to the script
-on first run. It starts empty - add sites with menu option 4, or edit the
-file by hand (one site per line).
+on first run. It starts empty - add sites from the Block sites
+screen, or edit the file by hand (one site per line).
 
 ## Notes
 

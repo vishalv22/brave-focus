@@ -4,12 +4,9 @@ Brave Focus Toggle
 Blocks distracting sites in Brave using browser policies.
 Run it, type the option number, done.
 
-1 = Block sites
-2 = Unblock sites
-3 = Show status and list
-4 = Add a site to the list
-5 = Remove a site from the list
-6 = Debloat Brave (turns off Rewards, Wallet, VPN,
+1 = Block sites - opens the blocking screen (turn on/off,
+    add a site, remove a site, show the list)
+2 = Debloat Brave (turns off Rewards, Wallet, VPN,
     News, Talk, Leo AI and the telemetry pings)
 0 = Exit
 
@@ -171,7 +168,7 @@ def debloat_brave():
 
 def focus_on(sites):
     if not sites:
-        print(c("\nYour list is empty - add a site first (option 4).", YELLOW))
+        print(c("\nYour list is empty - add a site first.", YELLOW))
         return
     apply_block(sites)
     print(c("\nFocus is ON. Blocked:", GREEN + BOLD))
@@ -187,15 +184,54 @@ def focus_off():
         print(c("\nFocus was already OFF - nothing to remove.", DIM))
 
 
-def show_status(sites):
-    state = c("ON", GREEN + BOLD) if block_is_on() else c("OFF", YELLOW)
-    print(f"\nStatus: {state}")
-    print("Your list:")
+def show_list(sites):
+    print("\nYour list:")
     if sites:
         for i, site in enumerate(sites, start=1):
             print(f"  {i}. {site}")
     else:
         print("  (empty)")
+
+
+def block_sites_menu(sites):
+    while True:
+        clear_screen()
+        on = block_is_on()
+        state = c("ON", GREEN + BOLD) if on else c("OFF", YELLOW)
+        print(c("========================================", CYAN))
+        print(c("             BLOCK SITES", BOLD + CYAN))
+        print(c("========================================", CYAN))
+        print(f"  SITE BLOCKING: {state}")
+        print(f"  SITES IN LIST: {len(sites)}")
+        print()
+        print("  1. Turn OFF" if on else "  1. Turn ON")
+        print("  2. Add site")
+        print("  3. Remove site")
+        print("  4. Show list")
+        print("  0. Back")
+        choice = input("\nEnter option number: ").strip()
+
+        if choice == "1":
+            clear_screen()
+            if on:
+                focus_off()
+            else:
+                focus_on(sites)
+            print(RELOAD_HINT)
+            input(c("\nPress Enter to continue...", DIM))
+        elif choice == "2":
+            add_site(sites)
+        elif choice == "3":
+            remove_site(sites)
+        elif choice == "4":
+            clear_screen()
+            show_list(sites)
+            input(c("\nPress Enter to continue...", DIM))
+        elif choice == "0":
+            return
+        else:
+            print(c("\nNot a valid option.", RED))
+            input(c("\nPress Enter to continue...", DIM))
 
 
 def add_site(sites):
@@ -265,19 +301,13 @@ RELOAD_HINT = (
 )
 
 
-def print_menu(sites):
-    state = c("ON", GREEN + BOLD) if block_is_on() else c("OFF", YELLOW)
+def print_menu():
     print(c("========================================", CYAN))
     print(c("          BRAVE FOCUS TOGGLE", BOLD + CYAN))
     print(c("========================================", CYAN))
-    print(f"  Focus: {state}   |   Sites in list: {len(sites)}")
     print()
     print("  1. Block sites")
-    print("  2. Unblock sites")
-    print("  3. Show status and list")
-    print("  4. Add a site")
-    print("  5. Remove a site")
-    print("  6. Debloat Brave")
+    print("  2. Debloat Brave")
     print("  0. Exit")
 
 
@@ -291,33 +321,22 @@ def main():
     while True:
         sites = load_sites()
         clear_screen()
-        print_menu(sites)
+        print_menu()
         choice = input("\nEnter option number: ").strip()
 
-        if choice != "0":
-            clear_screen()
-
         if choice == "1":
-            focus_on(sites)
-            print(RELOAD_HINT)
+            block_sites_menu(sites)
         elif choice == "2":
-            focus_off()
-            print(RELOAD_HINT)
-        elif choice == "3":
-            show_status(sites)
-        elif choice == "4":
-            add_site(sites)
-        elif choice == "5":
-            remove_site(sites)
-        elif choice == "6":
+            clear_screen()
             debloat_brave()
             print(RELOAD_HINT)
+            input(c("\nPress Enter to continue...", DIM))
         elif choice == "0":
             print("\nBye.")
             return
         else:
             print(c("\nNot a valid option.", RED))
-        input(c("\nPress Enter to continue...", DIM))
+            input(c("\nPress Enter to continue...", DIM))
 
 
 if __name__ == "__main__":
