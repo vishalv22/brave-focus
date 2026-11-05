@@ -164,47 +164,62 @@ def show_status(sites):
 
 
 def add_site(sites):
-    site = input("\nSite to block (example: youtube.com/shorts): ").strip()
-    site = site.replace("https://", "").replace("http://", "").strip()
-    if not site:
-        print("Nothing entered - cancelled.")
-        return
-    if site in sites:
-        print(f"'{site}' is already in your list.")
-        return
-    sites.append(site)
-    save_sites(sites)
-    print(f"Added: {site}")
-    if block_is_on():
-        apply_block(sites)
-        print("Focus is ON, so the block was updated right away.")
+    while True:
+        site = input("\nSite to block (example: youtube.com/shorts): ").strip()
+        site = site.replace("https://", "").replace("http://", "").strip()
+        if not site:
+            print("Nothing entered - back to menu.")
+            return
+        if site in sites:
+            print(f"'{site}' is already in your list.")
+        else:
+            sites.append(site)
+            save_sites(sites)
+            print(f"Added: {site}")
+            if block_is_on():
+                apply_block(sites)
+                print("Focus is ON, so the block was updated right away.")
+        print("\n1. Add another site")
+        print("2. Back to main menu")
+        nxt = input("Enter option number: ").strip()
+        if nxt != "1":
+            return
 
 
 def remove_site(sites):
-    if not sites:
-        print("\nYour list is empty - nothing to remove.")
-        return
-    print("\nYour list:")
-    for i, site in enumerate(sites, start=1):
-        print(f"  {i}. {site}")
-    choice = input("Number to remove (or Enter to cancel): ").strip()
-    if not choice:
-        print("Cancelled.")
-        return
-    try:
-        index = int(choice) - 1
-        removed = sites.pop(index)
-    except (ValueError, IndexError):
-        print("That number is not in the list - cancelled.")
-        return
-    save_sites(sites)
-    print(f"Removed: {removed}")
-    if block_is_on():
-        if sites:
-            apply_block(sites)
-        else:
-            remove_block()
-        print("Focus is ON, so the block was updated right away.")
+    while True:
+        if not sites:
+            print("\nYour list is empty - nothing to remove.")
+            return
+        print("\nYour list:")
+        for i, site in enumerate(sites, start=1):
+            print(f"  {i}. {site}")
+        choice = input("Number to remove (or Enter to cancel): ").strip()
+        if not choice:
+            print("Cancelled.")
+            return
+        try:
+            index = int(choice) - 1
+            removed = sites.pop(index)
+        except (ValueError, IndexError):
+            print("That number is not in the list - back to menu.")
+            return
+        save_sites(sites)
+        print(f"Removed: {removed}")
+        if block_is_on():
+            if sites:
+                apply_block(sites)
+            else:
+                remove_block()
+            print("Focus is ON, so the block was updated right away.")
+        if not sites:
+            print("Your list is now empty.")
+            return
+        print("\n1. Remove another site")
+        print("2. Back to main menu")
+        nxt = input("Enter option number: ").strip()
+        if nxt != "1":
+            return
 
 
 RELOAD_HINT = (
