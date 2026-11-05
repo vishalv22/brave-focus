@@ -207,13 +207,13 @@ def remove_site(sites):
         print("Focus is ON, so the block was updated right away.")
 
 
-def main():
-    if not is_admin():
-        print("Asking Windows for admin permission...")
-        restart_as_admin()
+RELOAD_HINT = (
+    "For Brave to notice: restart it fully, or open brave://policy "
+    "and click 'Reload policies'."
+)
 
-    sites = load_sites()
 
+def print_menu():
     print("=== Brave Focus Toggle ===")
     print("1. Focus ON   (block sites)")
     print("2. Focus OFF  (remove block)")
@@ -222,29 +222,39 @@ def main():
     print("5. Remove a site")
     print("6. Debloat Brave (one-way, no undo)")
     print("0. Exit")
-    choice = input("\nEnter option number: ").strip()
 
-    if choice == "1":
-        focus_on(sites)
-    elif choice == "2":
-        focus_off()
-    elif choice == "3":
-        show_status(sites)
-    elif choice == "4":
-        add_site(sites)
-    elif choice == "5":
-        remove_site(sites)
-    elif choice == "6":
-        debloat_brave()
-    elif choice == "0":
-        return
-    else:
-        print("\nNot a valid option.")
-        input("Press Enter to close.")
-        return
 
-    print("\nFor Brave to notice: restart it fully, or open brave://policy and click 'Reload policies'.")
-    input("Press Enter to close.")
+def main():
+    if not is_admin():
+        print("Asking Windows for admin permission...")
+        restart_as_admin()
+
+    while True:
+        sites = load_sites()
+        print_menu()
+        choice = input("\nEnter option number: ").strip()
+
+        if choice == "1":
+            focus_on(sites)
+            print(RELOAD_HINT)
+        elif choice == "2":
+            focus_off()
+            print(RELOAD_HINT)
+        elif choice == "3":
+            show_status(sites)
+        elif choice == "4":
+            add_site(sites)
+        elif choice == "5":
+            remove_site(sites)
+        elif choice == "6":
+            debloat_brave()
+            print(RELOAD_HINT)
+        elif choice == "0":
+            print("\nBye.")
+            return
+        else:
+            print("\nNot a valid option.")
+        print()
 
 
 if __name__ == "__main__":
