@@ -34,6 +34,35 @@ POLICY_PATH = r"SOFTWARE\Policies\BraveSoftware\Brave"
 BLOCKLIST_PATH = POLICY_PATH + r"\URLBlocklist"
 
 
+# ---------- colors ----------
+
+RESET = "\033[0m"
+BOLD = "\033[1m"
+GREEN = "\033[92m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+CYAN = "\033[96m"
+DIM = "\033[90m"
+
+
+def enable_colors():
+    """Turn on ANSI color support in the Windows console."""
+    try:
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+        mode = ctypes.c_ulong()
+        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            # 0x0004 = ENABLE_VIRTUAL_TERMINAL_PROCESSING
+            kernel32.SetConsoleMode(handle, mode.value | 0x0004)
+    except Exception:
+        pass  # colors are decoration - never crash over them
+
+
+def c(text, color):
+    """Wrap text in a color."""
+    return f"{color}{text}{RESET}"
+
+
 # ---------- admin ----------
 
 def is_admin():
@@ -128,7 +157,7 @@ def debloat_brave():
     for name, value in DEBLOAT_POLICIES.items():
         winreg.SetValueEx(key, name, 0, winreg.REG_DWORD, value)
     winreg.CloseKey(key)
-    print("\nDone. Debloat applied - these are now off:")
+    print(c("\nDone. Debloat applied - these are now off:", GREEN + BOLD))
     for name in DEBLOAT_POLICIES:
         print("  -", name)
 
@@ -137,10 +166,10 @@ def debloat_brave():
 
 def focus_on(sites):
     if not sites:
-        print("\nYour list is empty - add a site first (option 4).")
+        print(c("\nYour list is empty - add a site first (option 4).", YELLOW))
         return
     apply_block(sites)
-    print("\nFocus is ON. Blocked:")
+    print(c("\nFocus is ON. Blocked:", GREEN + BOLD))
     for site in sites:
         print("  -", site)
 
@@ -148,13 +177,14 @@ def focus_on(sites):
 def focus_off():
     if block_is_on():
         remove_block()
-        print("\nFocus is OFF. Blocklist removed (your list is kept).")
+        print(c("\nFocus is OFF. Blocklist removed (your list is kept).", YELLOW))
     else:
-        print("\nFocus was already OFF - nothing to remove.")
+        print(c("\nFocus was already OFF - nothing to remove.", DIM))
 
 
 def show_status(sites):
-    print("\nStatus:", "ON" if block_is_on() else "OFF")
+    state = c("ON", GREEN + BOLD) if block_is_on() else c("OFF", YELLOW)
+    print(f"\nStatus: {state}")
     print("Your list:")
     if sites:
         for i, site in enumerate(sites, start=1):
@@ -171,11 +201,11 @@ def add_site(sites):
             print("Nothing entered - back to menu.")
             return
         if site in sites:
-            print(f"'{site}' is already in your list.")
+            print(c(f"'{site}' is already in your list.", YELLOW))
         else:
             sites.append(site)
             save_sites(sites)
-            print(f"Added: {site}")
+            print(c(f"Added: {site}", GREEN))
             if block_is_on():
                 apply_block(sites)
                 print("Focus is ON, so the block was updated right away.")
@@ -205,7 +235,7 @@ def remove_site(sites):
             print("That number is not in the list - back to menu.")
             return
         save_sites(sites)
-        print(f"Removed: {removed}")
+        print(c(f"Removed: {removed}", GREEN))
         if block_is_on():
             if sites:
                 apply_block(sites)
@@ -244,6 +274,8 @@ def main():
         print("Asking Windows for admin permission...")
         restart_as_admin()
 
+    enable_colors()
+
     while True:
         sites = load_sites()
         print_menu()
@@ -268,7 +300,7 @@ def main():
             print("\nBye.")
             return
         else:
-            print("\nNot a valid option.")
+            print(c("\nNot a valid option.", RED))
         print()
 
 
