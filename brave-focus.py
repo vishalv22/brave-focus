@@ -63,6 +63,11 @@ def c(text, color):
     return f"{color}{text}{RESET}"
 
 
+def clear_screen():
+    """Clear the terminal so each screen starts clean."""
+    os.system("cls" if os.name == "nt" else "clear")
+
+
 # ---------- admin ----------
 
 def is_admin():
@@ -195,6 +200,7 @@ def show_status(sites):
 
 def add_site(sites):
     while True:
+        clear_screen()
         site = input("\nSite to block (example: youtube.com/shorts): ").strip()
         site = site.replace("https://", "").replace("http://", "").strip()
         if not site:
@@ -218,6 +224,7 @@ def add_site(sites):
 
 def remove_site(sites):
     while True:
+        clear_screen()
         if not sites:
             print("\nYour list is empty - nothing to remove.")
             return
@@ -283,8 +290,12 @@ def main():
 
     while True:
         sites = load_sites()
+        clear_screen()
         print_menu(sites)
         choice = input("\nEnter option number: ").strip()
+
+        if choice != "0":
+            clear_screen()
 
         if choice == "1":
             focus_on(sites)
@@ -306,7 +317,7 @@ def main():
             return
         else:
             print(c("\nNot a valid option.", RED))
-        print()
+        input(c("\nPress Enter to continue...", DIM))
 
 
 if __name__ == "__main__":
